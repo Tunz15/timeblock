@@ -1,0 +1,194 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890",
+      "name": "TimeBlock Event API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": "Complete test suite for Event API with priorities (PRIMARY/SECONDARY/BRAINDUMP)"
+    },
+    "item": [
+      {
+        "name": "Create Event",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Client Meeting\",\n  \"description\": \"Discuss project requirements\",\n  \"priority\": \"PRIMARY\",\n  \"eventDate\": \"{{currentDate}}\",\n  \"eventTime\": \"14:30:00\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{baseUrl}}/api/v1/events/add",
+            "host": ["{{baseUrl}}"],
+            "path": ["api", "v1", "events", "add"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Events",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{baseUrl}}/api/v1/events",
+            "host": ["{{baseUrl}}"],
+            "path": ["api", "v1", "events"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Events by Priority",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{baseUrl}}/api/v1/events/priority/SECONDARY",
+            "host": ["{{baseUrl}}"],
+            "path": ["api", "v1", "events", "priority", "SECONDARY"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Event",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Updated Client Meeting\",\n  \"priority\": \"SECONDARY\",\n  \"eventDate\": \"{{currentDate}}\",\n  \"eventTime\": \"15:00:00\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{baseUrl}}/api/v1/events/update/{{eventId}}",
+            "host": ["{{baseUrl}}"],
+            "path": ["api", "v1", "events", "update", "{{eventId}}"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Delete Event",
+        "request": {
+          "method": "DELETE",
+          "header": [],
+          "url": {
+            "raw": "{{baseUrl}}/api/v1/events/delete/{{eventId}}",
+            "host": ["{{baseUrl}}"],
+            "path": ["api", "v1", "events", "delete", "{{eventId}}"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Test Cases",
+        "item": [
+          {
+            "name": "Create Invalid Event (Missing Title)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"priority\": \"PRIMARY\",\n  \"eventDate\": \"{{currentDate}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/v1/events/add",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "v1", "events", "add"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Create BRAINDUMP Event (No Time)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"Random Ideas\",\n  \"priority\": \"BRAINDUMP\",\n  \"eventDate\": \"{{currentDate}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/v1/events/add",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "v1", "events", "add"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:8080",
+        "description": "Base URL for API"
+      },
+      {
+        "key": "currentDate",
+        "value": "2025-04-20",
+        "description": "Today's date in YYYY-MM-DD format"
+      },
+      {
+        "key": "eventId",
+        "value": "1",
+        "description": "ID of created event (set from Create Event response)"
+      }
+    ],
+    "event": [
+      {
+        "listen": "test",
+        "script": {
+          "exec": [
+            "// Set eventId variable after creating an event",
+            "if (pm.response.code === 200) {",
+            "  const jsonData = pm.response.json();",
+            "  pm.collectionVariables.set(\"eventId\", jsonData.id);",
+            "}"
+          ],
+          "type": "text/javascript"
+        }
+      }
+    ]
+  }
